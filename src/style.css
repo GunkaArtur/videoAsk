@@ -35,3 +35,12 @@ video {
     height: 630px;
     border-radius: 15px;
 }
+.play-button {
+    border: none;
+    background: none;
+    outline: none;
+    display: flex;
+    position: absolute;
+    top: 50%;
+    left: 43%;
+}
