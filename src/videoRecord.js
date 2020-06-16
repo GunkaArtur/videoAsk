@@ -1,41 +1,20 @@
-import React, { useState, useRef } from "react";
+import React, { Component } from "react";
 import Button from "./Button";
 import "./style.css";
 
-export default function VideoRecord() {
-  const [title, setTitle] = useState("Record");
-  const vidEl = useRef(null);
-  const vidEl2 = useRef(null);
-  const [mediaRecorder, setMediaRecorder] = useState(null);
-  const [video, setVideo] = useState(null);
+export default class VideoRecord extends Component {
+  constructor(props) {
+    super(props);
+    this.vidEl = React.createRef();
+    this.vidEl2 = React.createRef();
+    this.state = {
+      title: "Record",
+      mediaRecorder: null,
+      video: null,
+    };
+  }
 
-  const startListening = async () => {
-    navigator.mediaDevices
-      .getUserMedia({
-        audio: true,
-        video: { width: 360, height: 630, facingMode: "user" },
-      })
-      .then((stream) => {
-        vidEl2.current.srcObject = stream;
-        const newMediaRecorder = new MediaRecorder(stream);
-        newMediaRecorder.start();
-        let chunks = [];
-        newMediaRecorder.ondataavailable = function (e) {
-          chunks.push(e.data);
-        };
-        newMediaRecorder.onstop = function (e) {
-          const blob = new Blob(chunks, { type: "video/mp4;" });
-          const videoURL = window.URL.createObjectURL(blob);
-          setVideo(videoURL);
-        };
-        setMediaRecorder(newMediaRecorder);
-      })
-      .catch(function (err) {
-        console.log("The following getUserMedia error occured: " + err);
-      });
-  };
-
-  const record = async () => {
+  componentDidMount() {
     navigator.permissions.query({ name: "camera" }).then(function (result) {
       if (result.state !== "granted") {
         alert("Must allow camera to record");
@@ -47,52 +26,86 @@ export default function VideoRecord() {
           .then(() => {});
       }
     });
-    await startListening();
-    setTitle("Square");
-    const button = document.querySelector(".button");
-    button.classList.add("pulse");
+    this.startListening();
+  }
+
+  startListening = async () => {
+    navigator.mediaDevices
+      .getUserMedia({
+        audio: true,
+        video: { width: 360, height: 630, facingMode: "user" },
+      })
+      .then((stream) => {
+        this.vidEl2.current.srcObject = stream;
+      })
+      .catch(function (err) {
+        console.log("The following getUserMedia error occured: " + err);
+      });
   };
 
-  const play = () => {
-    setTitle("Play-Square");
-    console.log("vidEl", vidEl);
-    vidEl.current.play();
-  };
+  render() {
+    const { title, video } = this.state;
 
-  const stop = () => {
-    setTitle("Play");
-    const button = document.querySelector(".button");
-    button.classList.remove("pulse");
-    button.classList.add("play");
-    mediaRecorder.stop();
-    const mediaStream = vidEl2.current.srcObject;
-    const tracks = mediaStream.getTracks();
-    tracks.forEach((track) => track.stop());
-  };
+    const record = async () => {
+      const stream = this.vidEl2.current.srcObject;
+      const newMediaRecorder = new MediaRecorder(stream);
+      newMediaRecorder.start();
+      let chunks = [];
+      newMediaRecorder.ondataavailable = function (e) {
+        chunks.push(e.data);
+      };
+      newMediaRecorder.onstop = (e) => {
+        const blob = new Blob(chunks, { type: "video/mp4;" });
+        const videoURL = window.URL.createObjectURL(blob);
+        this.setState({ video: videoURL });
+      };
+      this.setState({ mediaRecorder: newMediaRecorder });
+      this.setState({ title: "Square" });
+      const button = document.querySelector(".button");
+      button.classList.add("pulse");
+    };
 
-  const playStop = () => {
-    setTitle("Play");
-  };
+    const play = () => {
+      this.setState({ title: "Play-Square" });
+      this.vidEl.current.play();
+    };
 
-  return (
-    <div className="main-container">
-      {(title === "Square" || title === "Record") && (
-        <video autoPlay ref={vidEl2} />
-      )}
-      {video && (
-        <>
-          <video ref={vidEl} src={video} autoPlay />
-        </>
-      )}
+    const playStop = () => {
+      this.setState({ title: "Play" });
+      this.vidEl.current.pause();
+    };
 
-      <Button
-        title={title}
-        record={record}
-        play={play}
-        stop={stop}
-        video={video}
-        playStop={playStop}
-      />
-    </div>
-  );
+    const stop = () => {
+      this.setState({ title: "Play" });
+      const button = document.querySelector(".button");
+      button.classList.remove("pulse");
+      button.classList.add("play");
+      this.state.mediaRecorder.stop();
+      const mediaStream = this.vidEl2.current.srcObject;
+      const tracks = mediaStream.getTracks();
+      tracks.forEach((track) => track.stop());
+    };
+
+    return (
+      <div className="main-container">
+        {(title === "Square" || title === "Record") && (
+          <video autoPlay ref={this.vidEl2} />
+        )}
+        {video && (
+          <>
+            <video ref={this.vidEl} src={video} autoPlay />
+          </>
+        )}
+
+        <Button
+          title={title}
+          record={record}
+          play={play}
+          stop={stop}
+          video={video}
+          playStop={playStop}
+        />
+      </div>
+    );
+  }
 }
