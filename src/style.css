@@ -1,46 +1,116 @@
 h1 {
-    display: flex;
-    justify-content: center;
+  display: flex;
+  justify-content: center;
 }
 .container {
-    width: 360px;
-    height: 630px;
-    margin: 0 auto;
-    border: 1px solid red;
-    border-radius: 15px;
+  width: 360px;
+  height: 630px;
+  margin: 0 auto;
+  border: 1px solid red;
+  border-radius: 15px;
 }
 .interactive {
-    position: absolute;
-    bottom: 30px;
-    width: 360px;
-    color: white;
+  position: absolute;
+  bottom: 30px;
+  width: 360px;
+  color: white;
 }
 .interactive h6 {
-    text-align: center;
-    font-size: 19px;
+  text-align: center;
+  font-size: 19px;
 }
 .options {
-    display: flex;
-    justify-content: space-around;
+  display: flex;
+  justify-content: space-around;
 }
 .answer-option {
-    border-radius: 15px;
-    background-color: rgb(125, 0, 254);
-    color: white;
-    width: 78px;
-    height: 88px;
+  border-radius: 15px;
+  background-color: rgb(125, 0, 254);
+  color: white;
+  width: 78px;
+  height: 88px;
 }
 video {
-    width: 360px;
-    height: 630px;
-    border-radius: 15px;
+  width: 360px;
+  height: 630px;
+  border-radius: 15px;
 }
 .play-button {
-    border: none;
-    background: none;
-    outline: none;
-    display: flex;
-    position: absolute;
-    top: 50%;
-    left: 43%;
+  border: none;
+  background: none;
+  outline: none;
+  display: flex;
+  position: absolute;
+  top: 50%;
+  left: 43%;
+}
+
+.main-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-family: sans-serif;
+  background: #fff;
+}
+
+.button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 65px;
+  height: 65px;
+  color: white;
+  border-radius: 50%;
+  background: #4ea7c5;
+  cursor: pointer;
+  margin: 10px;
+}
+
+.redo-button {
+  margin-right: 5px;
+  border-radius: 3px;
+  color: #70b244;
+  border-color: #c7cbca;
+  font-size: 10px;
+  height: 20px;
+  width: 45px;
+}
+
+.save-button {
+  border-radius: 3px;
+  border: none;
+  background-color: #70b244;
+  color: #fff;
+  font-size: 10px;
+  height: 20px;
+  width: 45px;
+}
+
+.pulse {
+  background: #c51500;
+  animation: pulse 1s infinite;
+}
+
+.play {
+  background: #70b244;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(0.95);
+  }
+  60% {
+    transform: scale(1);
+    box-shadow: 0 0 10px rgba(255, 0, 0, 0.6);
+  }
+  100% {
+    transform: scale(0.95);
+  }
+}
+
+.sub-text {
+  display: flex;
+  align-items: center;
+  font-size: 10px;
+  height: 20px;
 }

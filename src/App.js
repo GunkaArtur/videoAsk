@@ -2,7 +2,9 @@ import React, { Component } from "react";
 
 import "./style.css";
 import Intro from "./intro";
+import AudioRecord from "./useUserMedia";
 import VideoAsk from "./videoAsk";
+import VideoRecord from "./videoRecord";
 
 export default class App extends Component {
   state = {
@@ -14,7 +16,7 @@ export default class App extends Component {
   };
 
   render() {
-    const { isIntro } = this.state;
+    const { isIntro, isAudio, isVideo } = this.state;
     console.log("It works");
 
     const handleVideoClick = () => {
@@ -44,11 +46,19 @@ export default class App extends Component {
               handleTextClick={handleTextClick}
             />
           )}
-          {!isIntro && (
-            <VideoAsk
+          {!isIntro && isAudio && (
+            <AudioRecord />
+            /*<VideoAsk
               isAudio={this.state.isAudio}
               isVideo={this.state.isVideo}
-            />
+            />*/
+          )}
+          {!isIntro && isVideo && (
+            <VideoRecord />
+            /*<VideoAsk
+              isAudio={this.state.isAudio}
+              isVideo={this.state.isVideo}
+            />*/
           )}
         </div>
       </div>
